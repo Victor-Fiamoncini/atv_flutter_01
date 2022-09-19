@@ -1,8 +1,17 @@
+import 'package:atv_flutter_01/application/contracts/contact_repository.dart';
+import 'package:atv_flutter_01/application/entities/contact_entity.dart';
 import 'package:atv_flutter_01/validators/contact_validator.dart';
 import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
-  const ContactPage({Key? key}) : super(key: key);
+  final ContactRepository contactRepository;
+  final Function togglePages;
+
+  const ContactPage({
+    Key? key,
+    required this.contactRepository,
+    required this.togglePages,
+  }) : super(key: key);
 
   @override
   State<ContactPage> createState() => _ContactPageState();
@@ -10,6 +19,37 @@ class ContactPage extends StatefulWidget {
 
 class _ContactPageState extends State<ContactPage> {
   final _formKey = GlobalKey<FormState>();
+
+  String name = '';
+  String email = '';
+  String cellphone = '';
+
+  void _onNameFieldChange(String inputName) {
+    setState(() => name = inputName);
+  }
+
+  void _onEmailFieldChange(String inputEmail) {
+    setState(() => email = inputEmail);
+  }
+
+  void _onCellphoneFieldChange(String inputCellphone) {
+    setState(() => cellphone = inputCellphone);
+  }
+
+  void _onFormButtonPress() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final newContact = ContactEntity(
+      name: name,
+      email: email,
+      cellphone: int.parse(cellphone),
+    );
+
+    widget.contactRepository.addContact(newContact);
+    widget.togglePages();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +111,7 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                     ),
                     validator: ContactValidator.nameField,
-                    onChanged: (value) {},
+                    onChanged: _onNameFieldChange,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -109,7 +149,7 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                     ),
                     validator: ContactValidator.emailField,
-                    onChanged: (value) {},
+                    onChanged: _onEmailFieldChange,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -147,7 +187,7 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                     ),
                     validator: ContactValidator.cellphoneField,
-                    onChanged: (value) {},
+                    onChanged: _onCellphoneFieldChange,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
@@ -167,15 +207,7 @@ class _ContactPageState extends State<ContactPage> {
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Dados processados com sucesso'),
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: _onFormButtonPress,
                     child: const Text(
                       'Enviar',
                       style: TextStyle(
