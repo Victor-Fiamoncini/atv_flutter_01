@@ -16,7 +16,7 @@ class ContactListItem extends StatelessWidget {
       elevation: 0,
       color: Colors.cyan,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(28),
       ),
       child: ListTile(
         title: Text(
