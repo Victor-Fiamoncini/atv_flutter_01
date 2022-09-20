@@ -36,19 +36,29 @@ class _ContactPageState extends State<ContactPage> {
     setState(() => cellphone = inputCellphone);
   }
 
-  void _onFormButtonPress() {
+  void _onFormButtonPress(BuildContext context) {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final newContact = ContactEntity(
-      name: name,
-      email: email,
-      cellphone: int.parse(cellphone),
-    );
+    try {
+      final newContact = ContactEntity(
+        name: name,
+        email: email,
+        cellphone: int.parse(cellphone),
+      );
 
-    widget.contactRepository.addContact(newContact);
-    widget.togglePages();
+      widget.contactRepository.addContact(newContact);
+      widget.togglePages();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Um erro inesperado ocorreu, verifique seus dados e tente novamente',
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -210,7 +220,7 @@ class _ContactPageState extends State<ContactPage> {
                           ),
                         ),
                       ),
-                      onPressed: _onFormButtonPress,
+                      onPressed: () => _onFormButtonPress(context),
                       child: const Text(
                         'Enviar',
                         style: TextStyle(

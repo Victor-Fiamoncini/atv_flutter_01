@@ -16,10 +16,16 @@ class ContactValidator {
   }
 
   static String? cellphoneField(String? value) {
-    if (value!.isEmpty || value.length < 9) {
-      return 'Informe um número de celular';
-    }
+    try {
+      if (value!.isEmpty || value.length < 9) {
+        return 'Informe um número de celular válido';
+      }
 
-    return null;
+      int.tryParse(value);
+
+      return null;
+    } catch (e) {
+      return 'Informe um número de celular válido';
+    }
   }
 }
